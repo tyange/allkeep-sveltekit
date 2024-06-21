@@ -48,16 +48,17 @@
 		onClick
 	}: ButtonProps = $props();
 
-	const cNames = classnames([
-		'btn',
-		'btn-square',
-		'shadow-md',
-		Width[suitability],
-		BtnColors[color],
-		PaddingX[size]
-	]);
+	const cNames = () =>
+		classnames([
+			'btn',
+			'btn-square',
+			'shadow-md',
+			Width[suitability],
+			BtnColors[color],
+			PaddingX[size]
+		]);
 </script>
 
 {#if isShow}
-	<button {type} class={cNames} onclick={onClick}>{label}</button>
+	<button {type} class={cNames()} onclick={onClick}>{label}</button>
 {/if}
