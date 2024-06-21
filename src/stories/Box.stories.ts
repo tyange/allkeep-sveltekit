@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/svelte';
-import Box from '../components/ui/Box.svelte';
+
+import Box from '@/components/ui/Box.svelte';
 
 const meta = {
 	title: 'Components/Box',

@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/svelte';
 import { fn } from '@storybook/test';
 
-import Button from '../components/ui/Button.svelte';
+import { Suitability } from '@/constants/Suitability';
+import { Colors } from '@/constants/Colors';
+import { Sizes } from '@/constants/Sizes';
 
-import { Colors } from '../constants/Colors';
-import { Sizes } from '../constants/Sizes';
-import { Suitability } from '../constants/Suitability';
+import Button from '@/components/ui/Button.svelte';
 
 const meta = {
 	title: 'Components/Button',
