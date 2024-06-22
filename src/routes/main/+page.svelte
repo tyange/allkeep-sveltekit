@@ -33,7 +33,7 @@
 			{
 				headers: {
 					Authorization:
-						'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAdGVzdC5jb20iLCJleHAiOjE3MTkwNTcyOTEsInVzZXJJZCI6Mn0.E82hdp1g7Zt3PvDx1fWkbUtoCzRQzk2VYWQmPHm1dsk'
+						'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAdGVzdC5jb20iLCJleHAiOjE3MTkwNjgyMjYsInVzZXJJZCI6Mn0.WmbW7oX1EoKW539Jhbp8Mq1qw-Q8WcwIrQ5gDZgY1As'
 				}
 			}
 		);
@@ -46,13 +46,13 @@
 		interval = setInterval(intervalHandler, 100);
 	}
 
-	function timerPauseHandler() {
+	function pauseTimerHandler() {
 		timer.pauseTimer();
 		timer.setWorkPauseAt(new Date());
 		clearInterval(interval);
 	}
 
-	function timerRestartHandler() {
+	function restartTimerHandler() {
 		if (!$timer.workPauseAt) {
 			return;
 		}
@@ -63,7 +63,10 @@
 		timer.restartTimer();
 	}
 
-	// TODO: resetHandler 추가하기
+	function resetTimerHandler() {
+		timer.reset();
+		clearInterval(interval);
+	}
 
 	onDestroy(() => {
 		if (interval) {
@@ -81,16 +84,22 @@
 			clickHandler={workStartHandler}
 		/>
 		<Button
-			isShow={!$timer.isPause}
+			isShow={!$timer.isPause && $timer.workDoneAt !== null}
 			label="일을 멈춰요"
 			color={Colors.warning}
-			clickHandler={timerPauseHandler}
+			clickHandler={pauseTimerHandler}
 		/>
 		<Button
-			isShow={$timer.isPause}
+			isShow={$timer.isPause && $timer.workDoneAt !== null}
 			label="다시 시작하기"
 			color={Colors.secondary}
-			clickHandler={timerRestartHandler}
+			clickHandler={restartTimerHandler}
+		/>
+		<Button
+			isShow={$timer.workDoneAt !== null}
+			label="재설정"
+			color={Colors.neutral}
+			clickHandler={resetTimerHandler}
 		/>
 	</div>
 </div>
