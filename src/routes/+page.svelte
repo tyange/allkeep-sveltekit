@@ -8,5 +8,10 @@
 
 <p class="text-red-500">white shadow frontend</p>
 <button class="btn btn-primary">hi</button>
-<Button size={Sizes.md} color={Colors.warning} label="TEST" onClick={() => console.log('bye')} />
+<Button
+	size={Sizes.md}
+	color={Colors.warning}
+	label="TEST"
+	clickHandler={() => console.log('bye')}
+/>
 <Box></Box>

@@ -5,6 +5,7 @@ import { addSeconds } from 'date-fns';
 const INITIAL_REMAINING_TIME_STRING = '9시간 00분 00초';
 
 const initialState = {
+	isPause: false,
 	workDoneAt: null,
 	workPauseAt: null,
 	remainingTimeString: INITIAL_REMAINING_TIME_STRING
@@ -15,10 +16,19 @@ function createTimerStore(key: string) {
 	const value = JSON.parse(storedValue);
 
 	const { subscribe, set, update } = writable<{
+		isPause: boolean;
 		workDoneAt: Date | null;
 		workPauseAt: Date | null;
 		remainingTimeString: string;
 	}>(value);
+
+	function pauseTimer() {
+		update((prevTimer) => ({ ...prevTimer, isPause: true }));
+	}
+
+	function restartTimer() {
+		update((prevTimer) => ({ ...prevTimer, isPause: false }));
+	}
 
 	function setWorkDoneAt(startAt: Date) {
 		update((prevTimer) => ({ ...prevTimer, workDoneAt: startAt }));
@@ -48,7 +58,16 @@ function createTimerStore(key: string) {
 		set({ ...initialState });
 	}
 
-	return { subscribe, setWorkDoneAt, addWorkDoneAt, setWorkPauseAt, setRemainingTimeString, reset };
+	return {
+		subscribe,
+		pauseTimer,
+		restartTimer,
+		setWorkDoneAt,
+		addWorkDoneAt,
+		setWorkPauseAt,
+		setRemainingTimeString,
+		reset
+	};
 }
 
 export const timer = createTimerStore('timer');

@@ -35,7 +35,7 @@
 		color?: Colors;
 		size?: Sizes;
 		suitability?: Suitability;
-		onClick?: () => void;
+		clickHandler?: () => void;
 	}
 
 	let {
@@ -45,7 +45,7 @@
 		color = Colors.primary,
 		size = Sizes.sm,
 		suitability = Suitability.fit,
-		onClick
+		clickHandler
 	}: ButtonProps = $props();
 
 	const cNames = () =>
@@ -60,5 +60,5 @@
 </script>
 
 {#if isShow}
-	<button {type} class={cNames()} onclick={onClick}>{label}</button>
+	<button {type} class={cNames()} onclick={clickHandler}>{label}</button>
 {/if}

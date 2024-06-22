@@ -28,7 +28,7 @@ const meta = {
 			options: [...Object.values(Sizes)]
 		}
 	},
-	args: { onClick: fn() }
+	args: { clickHandler: fn() }
 } satisfies Meta<Button>;
 
 export default meta;
