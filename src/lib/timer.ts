@@ -1,31 +1,60 @@
 import { writable } from 'svelte/store';
 import { browser } from '$app/environment';
+import { addSeconds } from 'date-fns';
 
-function createCounter(key: string, initialValue: number) {
-	const storedValue = (browser && localStorage.getItem(key)) || 0;
-	const value = storedValue ? JSON.parse(storedValue) : initialValue;
+const INITIAL_REMAINING_TIME_STRING = '9시간 00분 00초';
 
-	const { subscribe, set, update } = writable(value);
+const initialState = {
+	workDoneAt: null,
+	workPauseAt: null,
+	remainingTimeString: INITIAL_REMAINING_TIME_STRING
+};
 
-	function increment() {
-		update((count) => count + 1);
+function createTimerStore(key: string) {
+	const storedValue = (browser && localStorage.getItem(key)) || JSON.stringify(initialState);
+	const value = JSON.parse(storedValue);
+
+	const { subscribe, set, update } = writable<{
+		workDoneAt: Date | null;
+		workPauseAt: Date | null;
+		remainingTimeString: string;
+	}>(value);
+
+	function setWorkDoneAt(startAt: Date) {
+		update((prevTimer) => ({ ...prevTimer, workDoneAt: startAt }));
 	}
 
-	function decrement() {
-		update((count) => count - 1);
+	function addWorkDoneAt(diffTime: number) {
+		update((prevTimer) => {
+			const prevWorkDoneAt = prevTimer.workDoneAt;
+
+			if (!prevWorkDoneAt) {
+				return prevTimer;
+			}
+
+			return { ...prevTimer, workDoneAt: addSeconds(prevWorkDoneAt, diffTime) };
+		});
+	}
+
+	function setWorkPauseAt(pauseAt: Date) {
+		update((prevTimer) => ({ ...prevTimer, workPauseAt: pauseAt }));
+	}
+
+	function setRemainingTimeString(timeString: string) {
+		update((prevTimer) => ({ ...prevTimer, remainingTimeString: timeString }));
 	}
 
 	function reset() {
-		set(0);
+		set({ ...initialState });
 	}
 
-	return { subscribe, increment, decrement, reset };
+	return { subscribe, setWorkDoneAt, addWorkDoneAt, setWorkPauseAt, setRemainingTimeString, reset };
 }
 
-export const counter = createCounter('count', 0);
+export const timer = createTimerStore('timer');
 
-counter.subscribe((value) => {
+timer.subscribe((value) => {
 	if (browser) {
-		localStorage.setItem('count', JSON.stringify(value));
+		localStorage.setItem('timer', JSON.stringify(value));
 	}
 });
