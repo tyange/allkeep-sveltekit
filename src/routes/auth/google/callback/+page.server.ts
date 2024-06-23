@@ -1,6 +1,13 @@
+import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ url, fetch, cookies }) => {
+	const session = cookies.get('session');
+
+	if (session && session !== 'undefined') {
+		redirect(302, '/');
+	}
+
 	const code = url.searchParams.get('code');
 
 	let isSuccess = false;

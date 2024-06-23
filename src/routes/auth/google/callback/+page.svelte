@@ -4,10 +4,6 @@
 	import Box from '@/components/ui/Box.svelte';
 
 	export let data: PageData;
-
-	// if (document) {
-	// 	console.log(document.cookie);
-	// }
 </script>
 
 <Box>
