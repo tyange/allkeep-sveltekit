@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { Colors } from '@/constants/Colors';
 	import { Sizes } from '@/constants/Sizes';
 
