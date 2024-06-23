@@ -41,6 +41,10 @@ export const load: PageServerLoad = async ({ url, fetch, cookies }) => {
 		isPending = false;
 	}
 
+	if (isSuccess) {
+		redirect(302, '/');
+	}
+
 	return {
 		auth: {
 			isSuccess,
