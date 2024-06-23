@@ -5,9 +5,9 @@
 	import axios from 'axios';
 
 	import { timer } from '@/lib/timer';
+	import { Colors } from '@/constants/Colors';
 
 	import Button from '@/components/ui/Button.svelte';
-	import { Colors } from '@/constants/Colors';
 
 	let interval: NodeJS.Timeout;
 	function intervalHandler() {

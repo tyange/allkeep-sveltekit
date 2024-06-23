@@ -1,9 +1,7 @@
 <script lang="ts">
-	import type { PageData } from './$types';
-
 	import Box from '@/components/ui/Box.svelte';
 
-	export let data: PageData;
+	let { data } = $props();
 </script>
 
 <Box>
