@@ -2,8 +2,6 @@
 	import Box from '@/components/ui/Box.svelte';
 
 	let { data } = $props();
-
-	console.log(data);
 </script>
 
 <Box>
