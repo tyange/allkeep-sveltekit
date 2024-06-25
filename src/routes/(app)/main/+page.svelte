@@ -2,9 +2,10 @@
 	import { onDestroy } from 'svelte';
 	import { addHours, differenceInSeconds, formatDuration, intervalToDuration } from 'date-fns';
 	import { ko } from 'date-fns/locale';
-	import axios from 'axios';
 
 	import { timer } from '@/lib/timer';
+	import { axiosClient } from '@/api/axiosClient';
+	import { getCookieValue } from '@/utils/getCookieValue';
 	import { Colors } from '@/constants/Colors';
 
 	import Button from '@/components/ui/Button.svelte';
@@ -24,18 +25,16 @@
 	}
 
 	async function workStartHandler() {
-		const res = await axios.post(
-			'http://localhost:8080/work/create',
+		const session = getCookieValue('session');
+		const headers = session ? { Authorization: session } : undefined;
+
+		const res = await axiosClient.post(
+			'work/create',
 			{
 				start_at: new Date().toISOString(),
 				company_name: 'kfc'
 			},
-			{
-				headers: {
-					Authorization:
-						'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAdGVzdC5jb20iLCJleHAiOjE3MTkwNjgyMjYsInVzZXJJZCI6Mn0.WmbW7oX1EoKW539Jhbp8Mq1qw-Q8WcwIrQ5gDZgY1As'
-				}
-			}
+			{ headers }
 		);
 
 		const data = await res.data;
