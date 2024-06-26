@@ -11,7 +11,7 @@ const initialState = {
 	remainingTimeString: INITIAL_REMAINING_TIME_STRING
 };
 
-function createTimerStore(key: string) {
+export function createTimerStore(key: string) {
 	const storedValue = (browser && localStorage.getItem(key)) || JSON.stringify(initialState);
 	const value = JSON.parse(storedValue);
 
@@ -69,11 +69,3 @@ function createTimerStore(key: string) {
 		reset
 	};
 }
-
-export const timer = createTimerStore('timer');
-
-timer.subscribe((value) => {
-	if (browser) {
-		localStorage.setItem('timer', JSON.stringify(value));
-	}
-});
