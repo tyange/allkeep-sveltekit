@@ -1,4 +1,4 @@
-import { writable } from 'svelte/store';
+import { writable, type Invalidator, type Subscriber, type Unsubscriber } from 'svelte/store';
 import { browser } from '$app/environment';
 import { addSeconds } from 'date-fns';
 
@@ -11,7 +11,34 @@ const initialState = {
 	remainingTimeString: INITIAL_REMAINING_TIME_STRING
 };
 
-export function createTimerStore(key: string) {
+export type TimerStore = {
+	subscribe: (
+		this: void,
+		run: Subscriber<{
+			isPause: boolean;
+			workDoneAt: Date | null;
+			workPauseAt: Date | null;
+			remainingTimeString: string;
+		}>,
+		invalidate?:
+			| Invalidator<{
+					isPause: boolean;
+					workDoneAt: Date | null;
+					workPauseAt: Date | null;
+					remainingTimeString: string;
+			  }>
+			| undefined
+	) => Unsubscriber;
+	pauseTimer: () => void;
+	restartTimer: () => void;
+	setWorkDoneAt: (startAt: Date) => void;
+	addWorkDoneAt: (diffTime: number) => void;
+	setWorkPauseAt: (pauseAt: Date) => void;
+	setRemainingTimeString: (timeString: string) => void;
+	reset: () => void;
+};
+
+export function createTimerStore(key: string): TimerStore {
 	const storedValue = (browser && localStorage.getItem(key)) || JSON.stringify(initialState);
 	const value = JSON.parse(storedValue);
 

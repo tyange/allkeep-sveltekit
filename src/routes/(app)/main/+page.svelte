@@ -1,7 +1,7 @@
 <script lang="ts">
-	import Timer from '@/components/Timer.svelte';
+	import Work from '@/components/Work.svelte';
 </script>
 
 <div>
-	<Timer name="timer0" />
+	<Work name="timer0" />
 </div>

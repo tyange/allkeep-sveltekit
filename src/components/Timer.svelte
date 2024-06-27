@@ -4,7 +4,7 @@
 	import { addHours, differenceInSeconds, formatDuration, intervalToDuration } from 'date-fns';
 	import { ko } from 'date-fns/locale';
 
-	import { createTimerStore } from '@/lib/timer';
+	import { createTimerStore, type TimerStore } from '@/lib/timer';
 	import { axiosClient } from '@/api/axiosClient';
 	import { getCookieValue } from '@/utils/getCookieValue';
 	import { Colors } from '@/constants/Colors';
@@ -13,13 +13,12 @@
 
 	type timerProps = {
 		name: string;
+		timerStore: TimerStore;
 	};
 
-	let { name }: timerProps = $props();
+	let { name, timerStore }: timerProps = $props();
 
-	const timer = createTimerStore(name);
-
-	timer.subscribe((value) => {
+	timerStore.subscribe((value) => {
 		if (browser) {
 			localStorage.setItem(name, JSON.stringify(value));
 		}
@@ -27,15 +26,15 @@
 
 	let interval: NodeJS.Timeout;
 	function intervalHandler() {
-		if (!$timer.workDoneAt) {
+		if (!$timerStore.workDoneAt) {
 			return;
 		}
 
-		const diff = intervalToDuration({ start: new Date(), end: $timer.workDoneAt });
-		timer.setRemainingTimeString(formatDuration(diff, { zero: true, locale: ko }));
+		const diff = intervalToDuration({ start: new Date(), end: $timerStore.workDoneAt });
+		timerStore.setRemainingTimeString(formatDuration(diff, { zero: true, locale: ko }));
 	}
 
-	if ($timer.workDoneAt && !$timer.isPause) {
+	if ($timerStore.workDoneAt && !$timerStore.isPause) {
 		interval = setInterval(intervalHandler, 100);
 	}
 
@@ -55,30 +54,30 @@
 		const data = await res.data;
 		const startAt = data.work['start_at'];
 
-		timer.setWorkDoneAt(addHours(new Date(startAt), 9));
+		timerStore.setWorkDoneAt(addHours(new Date(startAt), 9));
 
 		interval = setInterval(intervalHandler, 100);
 	}
 
 	function pauseTimerHandler() {
-		timer.pauseTimer();
-		timer.setWorkPauseAt(new Date());
+		timerStore.pauseTimer();
+		timerStore.setWorkPauseAt(new Date());
 		clearInterval(interval);
 	}
 
 	function restartTimerHandler() {
-		if (!$timer.workPauseAt) {
+		if (!$timerStore.workPauseAt) {
 			return;
 		}
 
-		const diffTime = differenceInSeconds(new Date(), $timer.workPauseAt);
-		timer.addWorkDoneAt(diffTime);
+		const diffTime = differenceInSeconds(new Date(), $timerStore.workPauseAt);
+		timerStore.addWorkDoneAt(diffTime);
 		interval = setInterval(intervalHandler, 100);
-		timer.restartTimer();
+		timerStore.restartTimer();
 	}
 
 	function resetTimerHandler() {
-		timer.reset();
+		timerStore.reset();
 		clearInterval(interval);
 	}
 
@@ -90,27 +89,27 @@
 </script>
 
 <div>
-	<p class="mb-5">{$timer.remainingTimeString}</p>
+	<p class="mb-5">{$timerStore.remainingTimeString}</p>
 	<div class="flex gap-5">
 		<Button
-			isShow={$timer.workDoneAt === null}
+			isShow={$timerStore.workDoneAt === null}
 			label="일을 시작합시다"
 			clickHandler={workStartHandler}
 		/>
 		<Button
-			isShow={!$timer.isPause && $timer.workDoneAt !== null}
+			isShow={!$timerStore.isPause && $timerStore.workDoneAt !== null}
 			label="일을 멈춰요"
 			color={Colors.warning}
 			clickHandler={pauseTimerHandler}
 		/>
 		<Button
-			isShow={$timer.isPause && $timer.workDoneAt !== null}
+			isShow={$timerStore.isPause && $timerStore.workDoneAt !== null}
 			label="다시 시작하기"
 			color={Colors.secondary}
 			clickHandler={restartTimerHandler}
 		/>
 		<Button
-			isShow={$timer.workDoneAt !== null}
+			isShow={$timerStore.workDoneAt !== null}
 			label="재설정"
 			color={Colors.neutral}
 			clickHandler={resetTimerHandler}
