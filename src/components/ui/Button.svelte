@@ -5,6 +5,7 @@
 	import { Colors } from '../../constants/Colors';
 	import { Sizes } from '../../constants/Sizes';
 	import { Suitability } from '../../constants/Suitability';
+	import type { Snippet } from 'svelte';
 
 	const Width: { [Key in Suitability]: string } = {
 		[Suitability.fit]: 'w-fit',
@@ -31,21 +32,22 @@
 
 	interface ButtonProps extends HTMLButtonAttributes {
 		isShow?: boolean;
-		label?: string;
 		color?: Colors;
 		size?: Sizes;
 		suitability?: Suitability;
 		clickHandler?: () => void;
+		disabled?: boolean;
 	}
 
 	let {
 		type = 'button',
 		isShow = true,
-		label = 'Button',
+		disabled = false,
 		color = Colors.primary,
 		size = Sizes.sm,
 		suitability = Suitability.fit,
-		clickHandler
+		clickHandler,
+		children
 	}: ButtonProps = $props();
 
 	const cNames = () =>
@@ -53,6 +55,7 @@
 			'btn',
 			'btn-square',
 			'shadow-md',
+			'disabled:text-black',
 			Width[suitability],
 			BtnColors[color],
 			PaddingX[size]
@@ -60,5 +63,11 @@
 </script>
 
 {#if isShow}
-	<button {type} class={cNames()} onclick={clickHandler}>{label}</button>
+	<button {disabled} {type} class={cNames()} onclick={clickHandler}>
+		{#if !children}
+			Button
+		{:else}
+			{@render children()}
+		{/if}
+	</button>
 {/if}

@@ -26,6 +26,9 @@ const meta = {
 		size: {
 			control: 'radio',
 			options: [...Object.values(Sizes)]
+		},
+		disabled: {
+			control: 'boolean'
 		}
 	},
 	args: { clickHandler: fn() }
