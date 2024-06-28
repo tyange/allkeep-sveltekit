@@ -29,16 +29,25 @@
 	};
 
 	const loginHandler: FormEventHandler<HTMLFormElement> = async (e) => {
+		e.preventDefault();
+
 		isLoginLoading = true;
 
 		const formData = new FormData(e.currentTarget);
+		const email = formData.get('email');
+		const password = formData.get('password');
+
+		if (!email || email === '' || !password || password === '') {
+			isLoginLoading = false;
+			return;
+		}
 
 		try {
 			await axiosClient.post(
 				'/auth/login',
 				{
-					email: formData.get('email'),
-					password: formData.get('password')
+					email,
+					password
 				},
 				{ withCredentials: true }
 			);
