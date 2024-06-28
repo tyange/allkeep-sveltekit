@@ -91,28 +91,23 @@
 <div>
 	<p class="mb-5">{$timerStore.remainingTimeString}</p>
 	<div class="flex gap-5">
-		<Button
-			isShow={$timerStore.workDoneAt === null}
-			label="일을 시작합시다"
-			clickHandler={workStartHandler}
-		/>
+		<Button isShow={$timerStore.workDoneAt === null} clickHandler={workStartHandler}>일을 시작합시다</Button>
 		<Button
 			isShow={!$timerStore.isPause && $timerStore.workDoneAt !== null}
-			label="일을 멈춰요"
 			color={Colors.warning}
 			clickHandler={pauseTimerHandler}
-		/>
+		>
+			일을 멈춰요
+		</Button>
 		<Button
 			isShow={$timerStore.isPause && $timerStore.workDoneAt !== null}
-			label="다시 시작하기"
 			color={Colors.secondary}
 			clickHandler={restartTimerHandler}
-		/>
-		<Button
-			isShow={$timerStore.workDoneAt !== null}
-			label="재설정"
-			color={Colors.neutral}
-			clickHandler={resetTimerHandler}
-		/>
+		>
+			다시 시작하기
+		</Button>
+		<Button isShow={$timerStore.workDoneAt !== null} color={Colors.neutral} clickHandler={resetTimerHandler}>
+			재설정
+		</Button>
 	</div>
 </div>
