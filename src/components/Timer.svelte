@@ -40,7 +40,12 @@
 
 	async function workStartHandler() {
 		const session = getCookieValue('session');
-		const headers = session ? { Authorization: session } : undefined;
+
+		if (!session) {
+			return;
+		}
+
+		const headers = { Authorization: session };
 
 		const res = await axiosClient.post(
 			'work/create',
