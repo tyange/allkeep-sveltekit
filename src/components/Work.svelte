@@ -25,7 +25,7 @@
 <div>
 	<Box>
 		<div class="flex flex-col">
-			{#if !!$timerStore.workDoneAt || isShowTimer}
+			{#if isShowTimer}
 				<Timer {name} {timerStore} />
 			{:else}
 				<CompanyForm {showTimerHandler} />

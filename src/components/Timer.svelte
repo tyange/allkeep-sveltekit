@@ -39,6 +39,7 @@
 	}
 
 	async function workStartHandler() {
+		// TODO: try catch
 		const session = getCookieValue('session');
 
 		if (!session) {
@@ -48,9 +49,10 @@
 		const headers = { Authorization: session };
 
 		const res = await axiosClient.post(
-			'work/create',
+			'works/create',
 			{
 				start_at: new Date().toISOString(),
+				// TODO: throw company name
 				company_name: 'kfc'
 			},
 			{ headers }
