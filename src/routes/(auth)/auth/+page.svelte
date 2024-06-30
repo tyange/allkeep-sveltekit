@@ -2,8 +2,8 @@
 	import type { FormEventHandler } from 'svelte/elements';
 	import { goto } from '$app/navigation';
 	import type { AxiosError } from 'axios';
-	import { axiosClient } from '@/api/axiosClient';
 
+	import { axiosClient } from '@/api/axiosClient';
 	import { Colors } from '@/constants/Colors';
 	import { Suitability } from '@/constants/Suitability';
 

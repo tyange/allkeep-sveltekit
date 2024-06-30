@@ -4,9 +4,9 @@
 	import { addHours, differenceInSeconds, formatDuration, intervalToDuration } from 'date-fns';
 	import { ko } from 'date-fns/locale';
 
-	import { createTimerStore, type TimerStore } from '@/lib/timer';
-	import { axiosClient } from '@/api/axiosClient';
+	import { type TimerStore } from '@/lib/timer';
 	import { getCookieValue } from '@/utils/getCookieValue';
+	import { axiosClient } from '@/api/axiosClient';
 	import { Colors } from '@/constants/Colors';
 
 	import Button from '@/components/ui/Button.svelte';
@@ -40,13 +40,11 @@
 
 	async function workStartHandler() {
 		// TODO: try catch
-		const session = getCookieValue('session');
+		const token = getCookieValue('session');
 
-		if (!session) {
+		if (!token) {
 			return;
 		}
-
-		const headers = { Authorization: session };
 
 		const res = await axiosClient.post(
 			'works/create',
@@ -55,7 +53,11 @@
 				// TODO: throw company name
 				company_name: 'kfc'
 			},
-			{ headers }
+			{
+				headers: {
+					Authorization: token
+				}
+			}
 		);
 
 		const data = await res.data;
