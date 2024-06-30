@@ -1,9 +1,12 @@
 <script lang="ts">
 	import { onDestroy } from 'svelte';
+	import type { AxiosResponse } from 'axios';
 	import { browser } from '$app/environment';
 	import { addHours, differenceInSeconds, formatDuration, intervalToDuration } from 'date-fns';
 	import { ko } from 'date-fns/locale';
 
+	import type { ResponseData } from '@/types/Response';
+	import type { Work } from '@/types/Work';
 	import { type TimerStore } from '@/lib/timer';
 	import { getCookieValue } from '@/utils/getCookieValue';
 	import { axiosClient } from '@/api/axiosClient';
@@ -46,7 +49,7 @@
 			return;
 		}
 
-		const res = await axiosClient.post(
+		const res: AxiosResponse<ResponseData<{ work: Work }>> = await axiosClient.post(
 			'works/create',
 			{
 				start_at: new Date().toISOString(),
@@ -60,7 +63,7 @@
 			}
 		);
 
-		const data = await res.data;
+		const data = res.data;
 		const startAt = data.work['start_at'];
 
 		timerStore.setWorkDoneAt(addHours(new Date(startAt), 9));

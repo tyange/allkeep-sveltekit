@@ -1,10 +1,15 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import type { AxiosResponse } from 'axios';
 
+	import type { ResponseData } from '@/types/Response';
+	import type { Work } from '@/types/Work';
 	import { axiosClient } from '@/api/axiosClient';
 	import { getCookieValue } from '@/utils/getCookieValue';
 
-	import Work from '@/components/Work.svelte';
+	import WorkComponent from '@/components/WorkComponent.svelte';
+
+	let works: Work[] = $state([]);
 
 	const fetchWorks = async () => {
 		try {
@@ -14,10 +19,11 @@
 				return;
 			}
 
-			const data = await axiosClient('/works/all', {
+			const res: AxiosResponse<ResponseData<{ works: Work[] }>> = await axiosClient('/works/all', {
 				headers: { Authorization: token }
 			});
-			console.log(data);
+
+			works = res.data.works ?? [];
 		} catch (err) {
 			console.error(err);
 		}
@@ -29,5 +35,9 @@
 </script>
 
 <div>
-	<Work name="timer0" />
+	{#if works.length > 0}
+		{#each works as work}
+			<WorkComponent name={String(work.id)} />
+		{/each}
+	{/if}
 </div>
