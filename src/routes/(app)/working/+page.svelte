@@ -2,12 +2,13 @@
 	import { onMount } from 'svelte';
 	import type { AxiosResponse } from 'axios';
 
-	import type { ResponseData } from '@/types/Response';
+	import type { ResponseData } from '@/types/ResponseData';
 	import type { Work } from '@/types/Work';
 	import { axiosClient } from '@/api/axiosClient';
 	import { getCookieValue } from '@/utils/getCookieValue';
 
 	import WorkComponent from '@/components/WorkComponent.svelte';
+	import CompanyForm from '@/components/CompanyForm.svelte';
 
 	let works: Work[] = $state([]);
 
@@ -34,10 +35,15 @@
 	});
 </script>
 
-<div>
-	{#if works.length > 0}
-		{#each works as work}
-			<WorkComponent name={String(work.id)} />
-		{/each}
-	{/if}
+<div class="flex w-full flex-1 items-center justify-center">
+	<div class="w-1/2">
+		{#if works.length > 0}
+			{#each works as work}
+				<WorkComponent name={String(work.id)} />
+			{/each}
+		{/if}
+		{#if works.length < 5}
+			<div>일 추가</div>
+		{/if}
+	</div>
 </div>

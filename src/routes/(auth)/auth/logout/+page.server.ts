@@ -8,13 +8,11 @@ export const load: PageServerLoad = async () => {
 
 export const actions: Actions = {
 	default({ cookies }) {
-		console.log(cookies);
-
 		cookies.set('session', '', {
 			path: '/',
 			expires: new Date(0)
 		});
 
-		redirect(302, '/main');
+		redirect(302, '/');
 	}
 };

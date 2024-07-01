@@ -5,7 +5,6 @@
 	import { Colors } from '../../constants/Colors';
 	import { Sizes } from '../../constants/Sizes';
 	import { Suitability } from '../../constants/Suitability';
-	import type { Snippet } from 'svelte';
 
 	const Width: { [Key in Suitability]: string } = {
 		[Suitability.fit]: 'w-fit',

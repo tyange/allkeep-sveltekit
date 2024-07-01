@@ -5,7 +5,7 @@
 	import { addHours, differenceInSeconds, formatDuration, intervalToDuration } from 'date-fns';
 	import { ko } from 'date-fns/locale';
 
-	import type { ResponseData } from '@/types/Response';
+	import type { ResponseData } from '@/types/ResponseData';
 	import type { Work } from '@/types/Work';
 	import { type TimerStore } from '@/lib/timer';
 	import { getCookieValue } from '@/utils/getCookieValue';

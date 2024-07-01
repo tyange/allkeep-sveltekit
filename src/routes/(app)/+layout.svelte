@@ -6,5 +6,7 @@
 	let { data, children } = $props();
 </script>
 
-<Header isAuth={data.isAuth} />
-{@render children()}
+<div class="flex flex-col w-full h-screen">
+	<Header isAuth={data.isAuth} />
+	{@render children()}
+</div>
