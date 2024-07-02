@@ -73,8 +73,12 @@
 										{cp.company_name}
 									</span>
 									<div>
-										<Button size={Sizes.xs} color={Colors.success}>수정</Button>
-										<Button size={Sizes.xs} color={Colors.error}>삭제</Button>
+										<button class="rounded-md border bg-success transition-all hover:border-green-500 hover:shadow-lg">
+											<i class="fa-solid fa-pen-to-square p-2"></i>
+										</button>
+										<button class="rounded-md border bg-error transition-all hover:border-red-500 hover:shadow-lg">
+											<i class="fa-solid fa-trash p-2"></i>
+										</button>
 									</div>
 								</li>
 							{/each}
