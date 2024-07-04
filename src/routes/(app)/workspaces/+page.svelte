@@ -24,7 +24,11 @@
 
 			const res: AxiosResponse<ResponseData<{ companies: Company[] }>> =
 				await axiosClient('/companies/all', {
-					headers: { Authorization: token }
+					headers: { Authorization: token },
+					params: {
+						pageSize: 4,
+						pageNum: 1
+					}
 				});
 			const data = res.data;
 
@@ -62,7 +66,7 @@
 			}
 
 			await axiosClient.put(
-				`companies/${companyId}`,
+				`/companies/${companyId}`,
 				{
 					company_name: enteredCompanyName
 				},
@@ -82,20 +86,30 @@
 		<div>
 			<CompanyForm {createCompany} />
 		</div>
-		<div class="flex-1">
-			<Box suitability={Suitability.full}>
-				{#if companies.length === 0}
-					<p>저장된 일하는 곳이 없습니다.</p>
-				{:else}
-					<div class="h-full w-full">
-						<ul class="flex flex-col gap-5">
-							{#each companies as cp}
-								<CompanyItem company={cp} {editCompany} />
-							{/each}
-						</ul>
-					</div>
-				{/if}
-			</Box>
-		</div>
+		<Box suitability={Suitability.full}>
+			<div
+				class="flex h-full w-full flex-col items-center justify-center gap-5"
+			>
+				<div class="w-full flex-1">
+					{#if companies.length === 0}
+						<p>저장된 일하는 곳이 없습니다.</p>
+					{:else}
+						<div class="h-full w-full">
+							<ul class="flex w-full flex-col gap-5">
+								{#each companies as cp}
+									<CompanyItem company={cp} {editCompany} />
+								{/each}
+							</ul>
+						</div>
+					{/if}
+				</div>
+				<div class="join">
+					<button class="btn-netural btn join-item">1</button>
+					<button class="btn-netural btn join-item">2</button>
+					<button class="btn-netural btn join-item">3</button>
+					<button class="btn-netural btn join-item">4</button>
+				</div>
+			</div>
+		</Box>
 	</div>
 </div>
