@@ -20,9 +20,10 @@
 				return;
 			}
 
-			const res: AxiosResponse<ResponseData<{ works: Work[] }>> = await axiosClient('/works/all', {
-				headers: { Authorization: token }
-			});
+			const res: AxiosResponse<ResponseData<{ works: Work[] }>> =
+				await axiosClient('/works/all', {
+					headers: { Authorization: token }
+				});
 
 			works = res.data.works ?? [];
 		} catch (err) {

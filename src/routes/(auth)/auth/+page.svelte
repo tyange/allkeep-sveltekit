@@ -22,7 +22,9 @@
 		response_type: 'code'
 	});
 
-	const googleLoginUrl = 'https://accounts.google.com/o/oauth2/v2/auth?' + googleLoginParams.toString();
+	const googleLoginUrl =
+		'https://accounts.google.com/o/oauth2/v2/auth?' +
+		googleLoginParams.toString();
 	const googleLoginHandler = () => {
 		isGoogleLoginLoading = true;
 		location.href = googleLoginUrl;
@@ -74,16 +76,20 @@
 <Box>
 	<div class="flex flex-col gap-5">
 		<form class="flex flex-col gap-5" onsubmit={loginHandler}>
-			<label class="input input-bordered flex items-center gap-2 bg-zinc-300 text-gray-500 shadow-md">
+			<label
+				class="input input-bordered flex items-center gap-2 bg-zinc-300 text-gray-500 shadow-md"
+			>
 				EMAIL
 				<input type="email" class="grow text-black" name="email" />
 			</label>
-			<label class="input input-bordered flex items-center gap-2 bg-zinc-300 text-gray-500 shadow-md">
+			<label
+				class="input input-bordered flex items-center gap-2 bg-zinc-300 text-gray-500 shadow-md"
+			>
 				PW
 				<input type="password" class="grow text-black" name="password" />
 			</label>
 			{#if loginError}
-				<p class="text-red-500 text-center">{loginError}</p>
+				<p class="text-center text-red-500">{loginError}</p>
 			{/if}
 			<Button
 				type="submit"

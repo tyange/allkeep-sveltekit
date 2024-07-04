@@ -10,9 +10,7 @@
 
 	import CompanyForm from '@/components/CompanyForm.svelte';
 	import Box from '@/components/ui/Box.svelte';
-	import Button from '@/components/ui/Button.svelte';
-	import { Colors } from '@/constants/Colors';
-	import { Sizes } from '@/constants/Sizes';
+	import CompanyItem from '@/components/CompanyItem.svelte';
 
 	let companies: Company[] = $state([]);
 
@@ -24,9 +22,10 @@
 				return;
 			}
 
-			const res: AxiosResponse<ResponseData<{ companies: Company[] }>> = await axiosClient('/companies/all', {
-				headers: { Authorization: token }
-			});
+			const res: AxiosResponse<ResponseData<{ companies: Company[] }>> =
+				await axiosClient('/companies/all', {
+					headers: { Authorization: token }
+				});
 			const data = res.data;
 
 			companies = data.companies;
@@ -43,11 +42,34 @@
 				return;
 			}
 
-			await axiosClient.post('/companies/create', { company_name: companyName }, { headers: { Authorization: token } });
+			await axiosClient.post(
+				'/companies/create',
+				{ company_name: companyName },
+				{ headers: { Authorization: token } }
+			);
 			await fetchAllCompanies();
 		} catch (err) {
 			console.error(err);
 		}
+	};
+
+	const editCompany = async (companyId: number, enteredCompanyName: string) => {
+		try {
+			const token = getCookieValue('session');
+
+			if (!token) {
+				return;
+			}
+
+			await axiosClient.put(
+				`companies/${companyId}`,
+				{
+					company_name: enteredCompanyName
+				},
+				{ headers: { Authorization: token } }
+			);
+			await fetchAllCompanies();
+		} catch (err) {}
 	};
 
 	onMount(() => {
@@ -68,19 +90,7 @@
 					<div class="h-full w-full">
 						<ul class="flex flex-col gap-5">
 							{#each companies as cp}
-								<li class="flex w-full items-center rounded-lg border border-gray-300 p-3 shadow-md">
-									<span class="flex-1">
-										{cp.company_name}
-									</span>
-									<div>
-										<button class="rounded-md border bg-success transition-all hover:border-green-500 hover:shadow-lg">
-											<i class="fa-solid fa-pen-to-square p-2"></i>
-										</button>
-										<button class="rounded-md border bg-error transition-all hover:border-red-500 hover:shadow-lg">
-											<i class="fa-solid fa-trash p-2"></i>
-										</button>
-									</div>
-								</li>
+								<CompanyItem company={cp} {editCompany} />
 							{/each}
 						</ul>
 					</div>
