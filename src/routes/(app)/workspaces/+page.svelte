@@ -5,16 +5,19 @@
 	import type { ResponseData } from '@/types/ResponseData';
 	import type { Company } from '@/types/Company';
 	import { axiosClient } from '@/api/axiosClient';
-	import { Suitability } from '@/constants/Suitability';
 	import { getCookieValue } from '@/utils/getCookieValue';
+	import { Suitability } from '@/constants/Suitability';
+	import { PageOptions } from '@/constants/PageOptions';
 
 	import CompanyForm from '@/components/CompanyForm.svelte';
 	import Box from '@/components/ui/Box.svelte';
 	import CompanyItem from '@/components/CompanyItem.svelte';
 
 	let companies: Company[] = $state([]);
+	let totalPageCount = $state(0);
+	let pageNum = $state(1);
 
-	const fetchAllCompanies = async () => {
+	const fetchAllCompanies = async (pageNum: number) => {
 		try {
 			const token = getCookieValue('session');
 
@@ -26,13 +29,33 @@
 				await axiosClient('/companies/all', {
 					headers: { Authorization: token },
 					params: {
-						pageSize: 4,
-						pageNum: 1
+						pageSize: PageOptions.PageSize,
+						pageNum
 					}
 				});
 			const data = res.data;
 
 			companies = data.companies;
+		} catch (err) {
+			console.error(err);
+		}
+	};
+
+	const fetchTotalPageCount = async () => {
+		try {
+			const token = getCookieValue('session');
+
+			if (!token) {
+				return;
+			}
+
+			const res: AxiosResponse<ResponseData<{ totalPageCount: number }>> =
+				await axiosClient(`/companies/all/count/${PageOptions.PageSize}`, {
+					headers: { Authorization: token }
+				});
+			const data = res.data;
+
+			totalPageCount = data.totalPageCount;
 		} catch (err) {
 			console.error(err);
 		}
@@ -51,7 +74,7 @@
 				{ company_name: companyName },
 				{ headers: { Authorization: token } }
 			);
-			await fetchAllCompanies();
+			await fetchAllCompanies(1);
 		} catch (err) {
 			console.error(err);
 		}
@@ -72,12 +95,20 @@
 				},
 				{ headers: { Authorization: token } }
 			);
-			await fetchAllCompanies();
+			await fetchAllCompanies(1);
 		} catch (err) {}
 	};
 
+	const setPageNum = (num: number) => {
+		pageNum = num;
+	};
+
+	$effect(() => {
+		fetchAllCompanies(pageNum);
+	});
+
 	onMount(() => {
-		fetchAllCompanies();
+		fetchTotalPageCount();
 	});
 </script>
 
@@ -104,10 +135,14 @@
 					{/if}
 				</div>
 				<div class="join">
-					<button class="btn-netural btn join-item">1</button>
-					<button class="btn-netural btn join-item">2</button>
-					<button class="btn-netural btn join-item">3</button>
-					<button class="btn-netural btn join-item">4</button>
+					{#each Array.from({ length: totalPageCount }, (_, i) => i + 1) as num}
+						<button
+							class="btn-netural btn join-item"
+							onclick={() => setPageNum(num)}
+						>
+							{num}
+						</button>
+					{/each}
 				</div>
 			</div>
 		</Box>
