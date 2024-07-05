@@ -96,7 +96,26 @@
 				{ headers: { Authorization: token } }
 			);
 			await fetchAllCompanies(1);
-		} catch (err) {}
+		} catch (err) {
+			console.error(err);
+		}
+	};
+
+	const deleteCompany = async (companyId: number) => {
+		try {
+			const token = getCookieValue('session');
+
+			if (!token) {
+				return;
+			}
+
+			await axiosClient.delete(`/companies/${companyId}`, {
+				headers: { Authorization: token }
+			});
+			await fetchAllCompanies(1);
+		} catch (err) {
+			console.error(err);
+		}
 	};
 
 	const setPageNum = (num: number) => {
@@ -105,9 +124,6 @@
 
 	$effect(() => {
 		fetchAllCompanies(pageNum);
-	});
-
-	onMount(() => {
 		fetchTotalPageCount();
 	});
 </script>
@@ -128,7 +144,7 @@
 						<div class="h-full w-full">
 							<ul class="flex w-full flex-col gap-5">
 								{#each companies as cp}
-									<CompanyItem company={cp} {editCompany} />
+									<CompanyItem company={cp} {editCompany} {deleteCompany} />
 								{/each}
 							</ul>
 						</div>

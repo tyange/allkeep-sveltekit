@@ -4,9 +4,10 @@
 	type CompanyProps = {
 		company: Company;
 		editCompany: (companyId: number, enteredCompanyName: string) => void;
+		deleteCompany: (companyId: number) => void;
 	};
 
-	let { company, editCompany }: CompanyProps = $props();
+	let { company, editCompany, deleteCompany }: CompanyProps = $props();
 
 	let isEditing = $state(false);
 	let enteredCompanyName = $state('');
@@ -54,6 +55,7 @@
 			</button>
 			<button
 				class="rounded-md border bg-error transition-all hover:border-red-500 hover:shadow-lg"
+				onclick={() => deleteCompany(company.ID)}
 			>
 				<i class="fa-solid fa-trash p-2"></i>
 			</button>
