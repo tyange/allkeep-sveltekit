@@ -30,6 +30,7 @@
 	$effect(() => {
 		if (inputElement) {
 			inputElement.focus();
+			enteredCompanyName = company.company_name;
 		}
 	});
 </script>
@@ -44,7 +45,7 @@
 	{:else}
 		<input
 			type="text"
-			class="input mr-5 min-w-10 flex-1 bg-white bg-opacity-90"
+			class="input mr-5 min-w-10 flex-1 bg-white bg-opacity-90 focus:input-bordered focus:border-primary"
 			bind:this={inputElement}
 			bind:value={enteredCompanyName}
 		/>
@@ -52,31 +53,31 @@
 	{#if !isEditing}
 		<div>
 			<button
-				class="rounded-md border bg-success transition-all hover:border-green-500 hover:shadow-lg"
+				class="h-10 w-10 rounded-md border bg-success transition-all hover:border-green-500 hover:shadow-lg"
 				onclick={editHandler}
 			>
-				<i class="fa-solid fa-pen-to-square p-2"></i>
+				<i class="fa-solid fa-pen-to-square"></i>
 			</button>
 			<button
-				class="rounded-md border bg-error transition-all hover:border-red-500 hover:shadow-lg"
+				class="h-10 w-10 rounded-md border bg-error transition-all hover:border-red-500 hover:shadow-lg"
 				onclick={() => deleteCompany(company.id)}
 			>
-				<i class="fa-solid fa-trash p-2"></i>
+				<i class="fa-solid fa-trash"></i>
 			</button>
 		</div>
 	{:else}
 		<div>
 			<button
-				class="rounded-md border bg-success transition-all hover:border-green-500 hover:shadow-lg"
+				class="h-10 w-10 rounded-md border bg-success transition-all hover:border-green-500 hover:shadow-lg"
 				onclick={() => submitHandler(company.id)}
 			>
-				<i class="fa-solid fa-check p-2"></i>
+				<i class="fa-solid fa-check"></i>
 			</button>
 			<button
-				class="rounded-md border bg-error transition-all hover:border-red-500 hover:shadow-lg"
+				class="h-10 w-10 rounded-md border bg-error transition-all hover:border-red-500 hover:shadow-lg"
 				onclick={cancelHandler}
 			>
-				<i class="fa-solid fa-x p-2"></i>
+				<i class="fa-solid fa-x"></i>
 			</button>
 		</div>
 	{/if}
