@@ -23,6 +23,10 @@
 		editCompany(companyId, enteredCompanyName);
 	};
 
+	const cancelHandler = () => {
+		isEditing = false;
+	};
+
 	$effect(() => {
 		if (inputElement) {
 			inputElement.focus();
@@ -70,6 +74,7 @@
 			</button>
 			<button
 				class="rounded-md border bg-error transition-all hover:border-red-500 hover:shadow-lg"
+				onclick={cancelHandler}
 			>
 				<i class="fa-solid fa-x p-2"></i>
 			</button>
