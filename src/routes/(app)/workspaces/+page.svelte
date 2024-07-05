@@ -25,37 +25,25 @@
 				return;
 			}
 
-			const res: AxiosResponse<ResponseData<{ companies: Company[] }>> =
-				await axiosClient('/companies/all', {
-					headers: { Authorization: token },
-					params: {
-						pageSize: PageOptions.PageSize,
-						pageNum
-					}
-				});
+			const res: AxiosResponse<
+				ResponseData<{
+					data: { companies: Company[]; total_item_count: number };
+				}>
+			> = await axiosClient('/companies/all', {
+				headers: { Authorization: token },
+				params: {
+					pageSize: PageOptions.PageSize,
+					pageNum
+				}
+			});
 			const data = res.data;
 
-			companies = data.companies;
-		} catch (err) {
-			console.error(err);
-		}
-	};
+			companies = data.data.companies;
 
-	const fetchTotalPageCount = async () => {
-		try {
-			const token = getCookieValue('session');
+			const splitWithPageSize = data.data.total_item_count % 4;
 
-			if (!token) {
-				return;
-			}
-
-			const res: AxiosResponse<ResponseData<{ totalPageCount: number }>> =
-				await axiosClient(`/companies/all/count/${PageOptions.PageSize}`, {
-					headers: { Authorization: token }
-				});
-			const data = res.data;
-
-			totalPageCount = data.totalPageCount;
+			totalPageCount =
+				splitWithPageSize === 0 ? splitWithPageSize : splitWithPageSize + 1;
 		} catch (err) {
 			console.error(err);
 		}
@@ -124,7 +112,6 @@
 
 	$effect(() => {
 		fetchAllCompanies(pageNum);
-		fetchTotalPageCount();
 	});
 </script>
 

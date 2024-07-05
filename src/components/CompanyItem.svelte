@@ -55,7 +55,7 @@
 			</button>
 			<button
 				class="rounded-md border bg-error transition-all hover:border-red-500 hover:shadow-lg"
-				onclick={() => deleteCompany(company.ID)}
+				onclick={() => deleteCompany(company.id)}
 			>
 				<i class="fa-solid fa-trash p-2"></i>
 			</button>
@@ -64,7 +64,7 @@
 		<div>
 			<button
 				class="rounded-md border bg-success transition-all hover:border-green-500 hover:shadow-lg"
-				onclick={() => submitHandler(company.ID)}
+				onclick={() => submitHandler(company.id)}
 			>
 				<i class="fa-solid fa-check p-2"></i>
 			</button>

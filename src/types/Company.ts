@@ -1,5 +1,5 @@
 export type Company = {
-	ID: number;
+	id: number;
 	company_name: string;
 	user_id: number;
 };
