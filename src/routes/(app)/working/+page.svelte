@@ -19,6 +19,7 @@
 
 	let works: Work[] = $state([]);
 	let companies: Company[] = $state([]);
+	let isManualInput = $state(false);
 
 	const fetchWorks = async () => {
 		try {
@@ -60,6 +61,10 @@
 		}
 	};
 
+	const toggleManualInput = () => {
+		isManualInput = !isManualInput;
+	};
+
 	onMount(() => {
 		fetchWorks();
 		fetchAllCompanies();
@@ -87,27 +92,54 @@
 						<div class="label">
 							<span class="label-text text-gray-700">몇 시간 일을 하나요?</span>
 						</div>
-						<input
-							type="range"
-							min="0"
-							max="12"
-							value="1"
-							class="range"
-							step="1"
-						/>
-						<div class="flex w-full justify-between px-2 text-xs">
-							{#each createNumberArray(MAX_WORKING_TIME) as workingTime}
-								<span>{workingTime}</span>
-							{/each}
-						</div>
-						<div class="label">
-							<span class="label-text-alt"></span>
-							<span class="label-text-alt text-gray-700">
-								<button>
-									아니면 직접 입력 <i class="fa-solid fa-arrow-right"></i>
-								</button>
-							</span>
-						</div>
+						{#if !isManualInput}
+							<input
+								type="range"
+								min="0"
+								max="12"
+								value="1"
+								class="range"
+								step="1"
+							/>
+							<div class="flex w-full justify-between py-1 text-xs">
+								{#each createNumberArray(MAX_WORKING_TIME) as workingTime}
+									<span>{workingTime}</span>
+								{/each}
+							</div>
+							<div class="label">
+								<span class="label-text-alt"></span>
+								<span class="label-text-alt text-gray-700">
+									<button onclick={toggleManualInput}>
+										아니면 직접 입력 <i class="fa-solid fa-arrow-right"></i>
+									</button>
+								</span>
+							</div>
+						{:else}
+							<label class="relative flex">
+								<label class="flex items-center justify-center gap-5">
+									<input
+										type="text"
+										class="input w-3/5 appearance-none bg-white"
+									/>
+									<span>시간</span>
+								</label>
+								<label class="flex items-center justify-center gap-5">
+									<input
+										type="text"
+										class="input w-3/5 appearance-none bg-white"
+									/>
+									<span>분</span>
+								</label>
+							</label>
+							<div class="label">
+								<span class="label-text-alt"></span>
+								<span class="label-text-alt text-gray-700">
+									<button onclick={toggleManualInput}>
+										범위로 입력 <i class="fa-solid fa-arrow-right"></i>
+									</button>
+								</span>
+							</div>
+						{/if}
 					</label>
 				</form>
 			</div>
