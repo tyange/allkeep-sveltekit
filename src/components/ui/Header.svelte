@@ -17,7 +17,7 @@
 					</li>
 				{:else}
 					<li>
-						<a href="/workspaces">Working</a>
+						<a href="/working">Working</a>
 					</li>
 					<li>
 						<a href="/workspaces">My Workspaces</a>
