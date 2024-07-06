@@ -13,6 +13,9 @@
 	import Box from '@/components/ui/Box.svelte';
 	import Button from '@/components/ui/Button.svelte';
 	import WorkComponent from '@/components/WorkComponent.svelte';
+	import { createNumberArray } from '@/utils/createNumberArray';
+
+	const MAX_WORKING_TIME = 12;
 
 	let works: Work[] = $state([]);
 	let companies: Company[] = $state([]);
@@ -93,19 +96,9 @@
 							step="1"
 						/>
 						<div class="flex w-full justify-between px-2 text-xs">
-							<span>0</span>
-							<span>1</span>
-							<span>2</span>
-							<span>3</span>
-							<span>4</span>
-							<span>5</span>
-							<span>6</span>
-							<span>7</span>
-							<span>8</span>
-							<span>9</span>
-							<span>10</span>
-							<span>11</span>
-							<span>12</span>
+							{#each createNumberArray(MAX_WORKING_TIME) as workingTime}
+								<span>{workingTime}</span>
+							{/each}
 						</div>
 						<div class="label">
 							<span class="label-text-alt"></span>

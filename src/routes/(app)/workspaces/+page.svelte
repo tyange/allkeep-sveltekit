@@ -12,6 +12,7 @@
 	import CompanyForm from '@/components/CompanyForm.svelte';
 	import Box from '@/components/ui/Box.svelte';
 	import CompanyItem from '@/components/CompanyItem.svelte';
+	import { createNumberArray } from '@/utils/createNumberArray';
 
 	let companies: Company[] = $state([]);
 	let totalPageCount = $state(0);
@@ -138,12 +139,12 @@
 					{/if}
 				</div>
 				<div class="join">
-					{#each Array.from({ length: totalPageCount }, (_, i) => i + 1) as num}
+					{#each createNumberArray(totalPageCount) as num}
 						<button
 							class="btn-netural btn join-item"
-							onclick={() => setPageNum(num)}
+							onclick={() => setPageNum(num + 1)}
 						>
-							{num}
+							{num + 1}
 						</button>
 					{/each}
 				</div>
