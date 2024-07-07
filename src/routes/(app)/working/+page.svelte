@@ -12,14 +12,17 @@
 
 	import Box from '@/components/ui/Box.svelte';
 	import Button from '@/components/ui/Button.svelte';
-	import WorkComponent from '@/components/WorkComponent.svelte';
 	import { createNumberArray } from '@/utils/createNumberArray';
 
-	const MAX_WORKING_TIME = 12;
+	const MAX_WORKING_HOURS = 13;
 
 	let works: Work[] = $state([]);
 	let companies: Company[] = $state([]);
 	let isManualInput = $state(false);
+	let workspace: Company | null = $state(null);
+	let rangedWorkingHours = $state(1);
+	let enteredWorkingHours = $state(0);
+	let enteredWorkingMinutes = $state(0);
 
 	const fetchWorks = async () => {
 		try {
@@ -56,6 +59,7 @@
 			const data = res.data;
 
 			companies = data.companies;
+			workspace = data.companies[0];
 		} catch (err) {
 			console.error(err);
 		}
@@ -63,6 +67,39 @@
 
 	const toggleManualInput = () => {
 		isManualInput = !isManualInput;
+	};
+
+	const createWork = async () => {
+		try {
+			const token = getCookieValue('session');
+
+			if (!token) {
+				return;
+			}
+
+			if (!workspace) {
+				return;
+			}
+
+			let workingHours = 0;
+			if (isManualInput) {
+				workingHours = enteredWorkingHours * 60 + enteredWorkingMinutes;
+			} else {
+				workingHours = rangedWorkingHours * 60;
+			}
+
+			await axiosClient.post(
+				'/works/create',
+				{
+					company_id: workspace.id,
+					company_name: workspace.company_name,
+					working_time: workingHours
+				},
+				{ headers: { Authorization: token } }
+			);
+		} catch (err) {
+			console.error(err);
+		}
 	};
 
 	onMount(() => {
@@ -77,14 +114,16 @@
 			<div
 				class="relative flex h-full w-full flex-col items-center justify-center"
 			>
-				<form class="flex h-full w-full flex-col gap-10">
+				<form id="workForm" class="flex h-full w-full flex-col gap-10">
 					<label class="form-control w-full">
 						<div class="label">
 							<span class="label-text text-gray-700">일하는 곳</span>
 						</div>
-						<select class="select bg-white">
+						<select class="select bg-white" bind:value={workspace}>
 							{#each companies as company}
-								<option value={company.id}>{company.company_name}</option>
+								<option value={company}>
+									{company.company_name}
+								</option>
 							{/each}
 						</select>
 					</label>
@@ -96,14 +135,14 @@
 							<input
 								type="range"
 								min="0"
-								max="12"
-								value="1"
+								max={MAX_WORKING_HOURS}
+								bind:value={rangedWorkingHours}
 								class="range"
 								step="1"
 							/>
 							<div class="flex w-full justify-between py-1 text-xs">
-								{#each createNumberArray(MAX_WORKING_TIME) as workingTime}
-									<span>{workingTime}</span>
+								{#each createNumberArray(MAX_WORKING_HOURS) as hour}
+									<span>{hour}</span>
 								{/each}
 							</div>
 							<div class="label">
@@ -120,6 +159,7 @@
 									<input
 										type="text"
 										class="input w-3/5 appearance-none bg-white"
+										bind:value={enteredWorkingHours}
 									/>
 									<span>시간</span>
 								</label>
@@ -127,6 +167,7 @@
 									<input
 										type="text"
 										class="input w-3/5 appearance-none bg-white"
+										bind:value={enteredWorkingMinutes}
 									/>
 									<span>분</span>
 								</label>
@@ -144,13 +185,8 @@
 				</form>
 			</div>
 			<div class="absolute bottom-7 right-7">
-				<Button size={Sizes.md}>추가</Button>
+				<Button size={Sizes.md} clickHandler={createWork}>추가</Button>
 			</div>
 		</Box>
-		{#if works.length > 0}
-			{#each works as work}
-				<WorkComponent name={String(work.id)} />
-			{/each}
-		{/if}
 	</div>
 </div>
