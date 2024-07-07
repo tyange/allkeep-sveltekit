@@ -9,10 +9,10 @@
 	import { Sizes } from '@/constants/Sizes';
 	import { axiosClient } from '@/api/axiosClient';
 	import { getCookieValue } from '@/utils/getCookieValue';
+	import { createNumberArray } from '@/utils/createNumberArray';
 
 	import Box from '@/components/ui/Box.svelte';
 	import Button from '@/components/ui/Button.svelte';
-	import { createNumberArray } from '@/utils/createNumberArray';
 
 	const MAX_WORKING_HOURS = 13;
 
