@@ -108,7 +108,7 @@
 	});
 </script>
 
-<div class="flex w-full flex-1 items-center justify-center">
+<div class="flex w-full flex-1 flex-col items-center justify-center gap-10">
 	<div class="relative h-96 w-2/3">
 		<Box suitability={Suitability.full}>
 			<div
@@ -186,6 +186,19 @@
 			</div>
 			<div class="absolute bottom-7 right-7">
 				<Button size={Sizes.md} clickHandler={createWork}>추가</Button>
+			</div>
+		</Box>
+	</div>
+	<div class="h-1/2 w-2/3">
+		<Box suitability={Suitability.full}>
+			<div class="flex h-full w-full flex-col justify-start gap-5">
+				{#each works as work}
+					<div
+						class="h-24 w-full rounded-lg border border-gray-300 p-3 shadow-md"
+					>
+						<span>{work.company_name}</span>
+					</div>
+				{/each}
 			</div>
 		</Box>
 	</div>
