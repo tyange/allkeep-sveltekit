@@ -13,6 +13,7 @@
 
 	import Box from '@/components/ui/Box.svelte';
 	import Button from '@/components/ui/Button.svelte';
+	import Timer from '@/components/Timer.svelte';
 
 	const MAX_WORKING_HOURS = 13;
 
@@ -189,14 +190,13 @@
 			</div>
 		</Box>
 	</div>
-	<div class="h-1/2 w-2/3">
+	<div class="h-fit w-2/3">
 		<Box suitability={Suitability.full}>
 			<div class="flex h-full w-full flex-col justify-start gap-5">
 				{#each works as work}
-					<div
-						class="h-24 w-full rounded-lg border border-gray-300 p-3 shadow-md"
-					>
+					<div class="w-full rounded-lg border border-gray-300 p-3 shadow-md">
 						<span>{work.company_name}</span>
+						<Timer workData={work} />
 					</div>
 				{/each}
 			</div>

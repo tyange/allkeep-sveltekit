@@ -1,8 +1,11 @@
 export type Work = {
 	id: number;
+	company_id: number;
 	company_name: string;
 	working_time: number;
-	start_at?: string;
-	done_at?: string;
+	start_at: string | null;
+	done_at: string | null;
+	pause_at: string | null;
+	is_pause: boolean;
 	user_id: number;
 };
