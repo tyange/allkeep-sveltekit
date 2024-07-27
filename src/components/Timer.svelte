@@ -12,7 +12,6 @@
 
 	import type { ResponseData } from '@/types/ResponseData';
 	import type { Work } from '@/types/Work';
-	import { getCookieValue } from '@/utils/getCookieValue';
 	import { axiosClient } from '@/api/axiosClient';
 	import { Colors } from '@/constants/Colors';
 
@@ -27,9 +26,27 @@
 	let remainingTime = $state('');
 	let doneAt = $state(workData.done_at);
 	let pauseAt = $state(workData.pause_at);
+	let isPause = $state(workData.is_pause);
+	let isDonePending = $state(false);
 
 	let interval: NodeJS.Timeout;
-	function intervalHandler(end: Date) {
+	async function intervalHandler(end: Date) {
+		const now = new Date();
+
+		if (now >= end && !isDonePending) {
+			isDonePending = true;
+
+			try {
+				await axiosClient.put(`/works/done/${workData.id}`);
+			} catch (err) {
+				console.log(err);
+			}
+
+			clearInterval(interval);
+
+			return;
+		}
+
 		const diff = intervalToDuration({
 			start: new Date(),
 			end
@@ -38,10 +55,10 @@
 		remainingTime = formatDuration(diff, { zero: true, locale: ko });
 	}
 
-	if (!workData.is_pause) {
-		interval = setInterval(() => {
+	if (!workData.is_pause && !workData.is_done) {
+		interval = setInterval(async () => {
 			if (workData.done_at) {
-				intervalHandler(new Date(workData.done_at));
+				await intervalHandler(new Date(workData.done_at));
 			} else {
 				clearInterval(interval);
 			}
@@ -58,28 +75,14 @@
 	}
 
 	async function workStartHandler() {
-		const token = getCookieValue('session');
-
-		if (!token) {
-			return;
-		}
-
 		try {
 			const currentDateTime = new Date();
 
 			const res: AxiosResponse<ResponseData<{ done_at: string }>> =
-				await axiosClient.put(
-					`/works/start/${workData.id}`,
-					{
-						start_at: currentDateTime.toISOString(),
-						done_at: addMinutes(currentDateTime, workData.working_time)
-					},
-					{
-						headers: {
-							Authorization: token
-						}
-					}
-				);
+				await axiosClient.put(`/works/start/${workData.id}`, {
+					start_at: currentDateTime.toISOString(),
+					done_at: addMinutes(currentDateTime, workData.working_time)
+				});
 
 			const data = res.data;
 
@@ -87,6 +90,7 @@
 				return;
 			}
 
+			doneAt = data.done_at;
 			interval = setInterval(() => {
 				if (data.done_at) {
 					intervalHandler(new Date(data.done_at));
@@ -100,28 +104,15 @@
 	}
 
 	async function workPauseHandler() {
-		const token = getCookieValue('session');
-
-		if (!token) {
-			return;
-		}
-
 		try {
 			const currentDateTime = new Date();
 
-			await axiosClient.put(
-				`/works/pause/${workData.id}`,
-				{
-					pause_at: currentDateTime.toISOString()
-				},
-				{
-					headers: {
-						Authorization: token
-					}
-				}
-			);
+			await axiosClient.put(`/works/pause/${workData.id}`, {
+				pause_at: currentDateTime.toISOString()
+			});
 
 			pauseAt = currentDateTime.toISOString();
+			isPause = true;
 			clearInterval(interval);
 		} catch (err) {
 			console.log(err);
@@ -129,12 +120,6 @@
 	}
 
 	async function workRestartHandler() {
-		const token = getCookieValue('session');
-
-		if (!token) {
-			return;
-		}
-
 		if (!pauseAt) {
 			return;
 		}
@@ -149,20 +134,13 @@
 			const updatedDoneAt = addSeconds(new Date(doneAt), diff);
 
 			const res: AxiosResponse<ResponseData<{ done_at: string }>> =
-				await axiosClient.put(
-					`/works/restart/${workData.id}`,
-					{
-						done_at: updatedDoneAt.toISOString()
-					},
-					{
-						headers: {
-							Authorization: token
-						}
-					}
-				);
+				await axiosClient.put(`/works/restart/${workData.id}`, {
+					done_at: updatedDoneAt.toISOString()
+				});
 			const data = res.data;
 
 			doneAt = data.done_at;
+			isPause = false;
 			interval = setInterval(() => {
 				intervalHandler(new Date(data.done_at));
 			});
@@ -180,14 +158,19 @@
 
 <div>
 	<p class="mb-5">{remainingTime}</p>
-	<div class="flex5">
-		<Button clickHandler={workStartHandler}>일을 시작합시다</Button>
-		<Button color={Colors.warning} clickHandler={workPauseHandler}>
-			일을 멈춰요
-		</Button>
-		<Button color={Colors.secondary} clickHandler={workRestartHandler}>
-			다시 시작하기
-		</Button>
-		<Button color={Colors.neutral}>재설정</Button>
+	<div class="">
+		{#if !doneAt}
+			<Button clickHandler={workStartHandler}>일을 시작합시다</Button>
+		{/if}
+		{#if !isPause}
+			<Button color={Colors.warning} clickHandler={workPauseHandler}>
+				일을 멈춰요
+			</Button>
+		{/if}
+		{#if isPause}
+			<Button color={Colors.secondary} clickHandler={workRestartHandler}>
+				다시 시작하기
+			</Button>
+		{/if}
 	</div>
 </div>

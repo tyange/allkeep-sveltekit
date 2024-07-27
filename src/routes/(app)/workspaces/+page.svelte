@@ -20,18 +20,11 @@
 
 	const fetchAllCompanies = async (pageNum: number) => {
 		try {
-			const token = getCookieValue('session');
-
-			if (!token) {
-				return;
-			}
-
 			const res: AxiosResponse<
 				ResponseData<{
 					data: { companies: Company[]; total_item_count: number };
 				}>
 			> = await axiosClient('/companies/all', {
-				headers: { Authorization: token },
 				params: {
 					pageSize: PageOptions.PageSize,
 					pageNum
@@ -71,19 +64,9 @@
 
 	const editCompany = async (companyId: number, enteredCompanyName: string) => {
 		try {
-			const token = getCookieValue('session');
-
-			if (!token) {
-				return;
-			}
-
-			await axiosClient.put(
-				`/companies/${companyId}`,
-				{
-					company_name: enteredCompanyName
-				},
-				{ headers: { Authorization: token } }
-			);
+			await axiosClient.put(`/companies/${companyId}`, {
+				company_name: enteredCompanyName
+			});
 			await fetchAllCompanies(1);
 		} catch (err) {
 			console.error(err);
@@ -92,15 +75,7 @@
 
 	const deleteCompany = async (companyId: number) => {
 		try {
-			const token = getCookieValue('session');
-
-			if (!token) {
-				return;
-			}
-
-			await axiosClient.delete(`/companies/${companyId}`, {
-				headers: { Authorization: token }
-			});
+			await axiosClient.delete(`/companies/${companyId}`);
 			await fetchAllCompanies(1);
 		} catch (err) {
 			console.error(err);

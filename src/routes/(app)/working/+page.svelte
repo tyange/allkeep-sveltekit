@@ -27,16 +27,8 @@
 
 	const fetchWorks = async () => {
 		try {
-			const token = getCookieValue('session');
-
-			if (!token) {
-				return;
-			}
-
 			const res: AxiosResponse<ResponseData<{ works: Work[] }>> =
-				await axiosClient('/works/all', {
-					headers: { Authorization: token }
-				});
+				await axiosClient('/works/all');
 
 			works = res.data.works ?? [];
 		} catch (err) {
@@ -46,16 +38,8 @@
 
 	const fetchAllCompanies = async () => {
 		try {
-			const token = getCookieValue('session');
-
-			if (!token) {
-				return;
-			}
-
 			const res: AxiosResponse<ResponseData<{ companies: Company[] }>> =
-				await axiosClient('/companies/all-at-once', {
-					headers: { Authorization: token }
-				});
+				await axiosClient('/companies/all-at-once');
 
 			const data = res.data;
 
@@ -72,12 +56,6 @@
 
 	const createWork = async () => {
 		try {
-			const token = getCookieValue('session');
-
-			if (!token) {
-				return;
-			}
-
 			if (!workspace) {
 				return;
 			}
@@ -89,15 +67,11 @@
 				workingHours = rangedWorkingHours * 60;
 			}
 
-			await axiosClient.post(
-				'/works/create',
-				{
-					company_id: workspace.id,
-					company_name: workspace.company_name,
-					working_time: workingHours
-				},
-				{ headers: { Authorization: token } }
-			);
+			await axiosClient.post('/works/create', {
+				company_id: workspace.id,
+				company_name: workspace.company_name,
+				working_time: workingHours
+			});
 		} catch (err) {
 			console.error(err);
 		}

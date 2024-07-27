@@ -7,5 +7,6 @@ export type Work = {
 	done_at: string | null;
 	pause_at: string | null;
 	is_pause: boolean;
+	is_done: boolean;
 	user_id: number;
 };
