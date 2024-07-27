@@ -34,10 +34,10 @@
 
 			companies = data.data.companies;
 
-			const splitWithPageSize = data.data.total_item_count % 4;
+			const itemsPerPage = 4;
+			const totalItemCount = data.data.total_item_count;
 
-			totalPageCount =
-				splitWithPageSize === 0 ? splitWithPageSize : splitWithPageSize + 1;
+			totalPageCount = Math.ceil(totalItemCount / itemsPerPage);
 		} catch (err) {
 			console.error(err);
 		}
