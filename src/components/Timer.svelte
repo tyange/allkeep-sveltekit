@@ -19,9 +19,10 @@
 
 	type timerProps = {
 		workData: Work;
+		refetchWorks: () => Promise<void>;
 	};
 
-	let { workData }: timerProps = $props();
+	let { workData, refetchWorks }: timerProps = $props();
 
 	let remainingTime = $state('');
 	let doneAt = $state(workData.done_at);
@@ -38,6 +39,7 @@
 
 			try {
 				await axiosClient.put(`/works/done/${workData.id}`);
+				await refetchWorks();
 			} catch (err) {
 				console.log(err);
 			}
@@ -162,7 +164,7 @@
 		{#if !doneAt}
 			<Button clickHandler={workStartHandler}>일을 시작합시다</Button>
 		{/if}
-		{#if !isPause}
+		{#if doneAt && !isPause}
 			<Button color={Colors.warning} clickHandler={workPauseHandler}>
 				일을 멈춰요
 			</Button>
