@@ -5,7 +5,6 @@
 	import type { ResponseData } from '@/types/ResponseData';
 	import type { Company } from '@/types/Company';
 	import { axiosClient } from '@/api/axiosClient';
-	import { getCookieValue } from '@/utils/getCookieValue';
 	import { Suitability } from '@/constants/Suitability';
 	import { PageOptions } from '@/constants/PageOptions';
 
@@ -32,6 +31,13 @@
 			});
 			const data = res.data;
 
+			if (!data.data.companies) {
+				companies = [];
+				totalPageCount = 0;
+				pageNum = 1;
+				return;
+			}
+
 			companies = data.data.companies;
 
 			const itemsPerPage = 4;
@@ -45,17 +51,9 @@
 
 	const createCompany = async (companyName: string) => {
 		try {
-			const token = getCookieValue('session');
-
-			if (!token) {
-				return;
-			}
-
-			await axiosClient.post(
-				'/companies/create',
-				{ company_name: companyName },
-				{ headers: { Authorization: token } }
-			);
+			await axiosClient.post('/companies/create', {
+				company_name: companyName
+			});
 			await fetchAllCompanies(1);
 		} catch (err) {
 			console.error(err);
