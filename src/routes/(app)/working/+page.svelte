@@ -25,10 +25,10 @@
 	let enteredWorkingHours = $state(0);
 	let enteredWorkingMinutes = $state(0);
 
-	const fetchWorks = async () => {
+	const fetchIncompleteWorks = async () => {
 		try {
 			const res: AxiosResponse<ResponseData<{ works: Work[] }>> =
-				await axiosClient('/works/all');
+				await axiosClient('/works/all-incomplete');
 
 			works = res.data.works ?? [];
 		} catch (err) {
@@ -42,6 +42,12 @@
 				await axiosClient('/companies/all-at-once');
 
 			const data = res.data;
+
+			if (!data.companies) {
+				companies = [];
+				workspace = null;
+				return;
+			}
 
 			companies = data.companies;
 			workspace = data.companies[0];
@@ -78,7 +84,7 @@
 	};
 
 	onMount(() => {
-		fetchWorks();
+		fetchIncompleteWorks();
 		fetchAllCompanies();
 	});
 </script>
@@ -170,7 +176,7 @@
 				{#each works as work}
 					<div class="w-full rounded-lg border border-gray-300 p-3 shadow-md">
 						<span>{work.company_name}</span>
-						<Timer workData={work} />
+						<Timer workData={work} refetchWorks={fetchIncompleteWorks} />
 					</div>
 				{/each}
 			</div>
