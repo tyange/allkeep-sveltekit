@@ -158,7 +158,7 @@
 	});
 </script>
 
-<div>
+<div class="timer">
 	<p class="mb-5">{remainingTime}</p>
 	<div class="">
 		{#if !doneAt}
